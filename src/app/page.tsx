@@ -1,101 +1,222 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+
+type MonthlyBills = {
+  id: string;
+  name: string;
+  amount: number;
+  dueDate: string;
+};
+
+type Month = {
+  month: string;
+  bills: MonthlyBills[];
+}
+
+const initialSeed = [
+  {
+    month: "January",
+    bills: [
+      {
+        id: "1",
+        name: "Rent",
+        amount: 1000,
+        dueDate: "01/01/2022",
+      },
+      {
+        id: "2",
+        name: "Electricity",
+        amount: 50,
+        dueDate: "01/01/2022",
+      },
+      {
+        id: "3",
+        name: "Water",
+        amount: 20,
+        dueDate: "01/01/2022",
+      },
+    ],
+  },
+  {
+    month: "February",
+    bills: [
+      {
+        id: "4",
+        name: "Rent",
+        amount: 1000,
+        dueDate: "01/02/2022",
+      },
+      {
+        id: "5",
+        name: "Electricity",
+        amount: 50,
+        dueDate: "01/02/2022",
+      },
+      {
+        id: "6",
+        name: "Water",
+        amount: 20,
+        dueDate: "01/02/2022",
+      },
+    ],
+  },
+  {
+    month: "March",
+    bills: [
+      {
+        id: "7",
+        name: "Rent",
+        amount: 1000,
+        dueDate: "01/03/2022",
+      },
+      {
+        id: "8",
+        name: "Electricity",
+        amount: 50,
+        dueDate: "01/03/2022",
+      },
+      {
+        id: "9",
+        name: "Water",
+        amount: 20,
+        dueDate: "01/03/2022",
+      },
+    ],
+  },
+  {
+    month: "April",
+    bills: [
+      {
+        id: "10",
+        name: "Rent",
+        amount: 1000,
+        dueDate: "01/04/2022",
+      },
+      {
+        id: "11",
+        name: "Electricity",
+        amount: 50,
+        dueDate: "01/04/2022",
+      },
+      {
+        id: "12",
+        name: "Water",
+        amount: 20,
+        dueDate: "01/04/2022",
+      },
+    ],
+  },
+  {
+    month: "May",
+    bills: [
+      {
+        id: "13",
+        name: "Rent",
+        amount: 1000,
+        dueDate: "01/05/2022",
+      },
+      {
+        id: "14",
+        name: "Electricity",
+        amount: 50,
+        dueDate: "01/05/2022",
+      },
+      {
+        id: "15",
+        name: "Water",
+        amount: 20,
+        dueDate: "01/05/2022",
+      },
+    ],
+  },
+  {
+    month: "June",
+    bills: [
+      {
+        id: "16",
+        name: "Rent",
+        amount: 1000,
+        dueDate: "01/06/2022",
+      },
+      {
+        id: "17",
+        name: "Electricity",
+        amount: 50,
+        dueDate: "01/06/2022",
+      },
+      {
+        id: "18",
+        name: "Water",
+        amount: 20,
+        dueDate: "01/06/2022",
+      },
+    ],
+  },
+];
+
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [bills, setBills] = useState<Month[]>([...initialSeed.slice(0, 3)]);
+  const [currentIndex, setCurrentIndex] = useState(1);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const getSkew = (index: number) => {
+    if (index === 0) {
+      return "skew-y-[-12deg] absolute left-[480px] top-8";
+    } else if (index === 2) {
+      return "skew-y-12 absolute right-[480px] top-8";
+    }
+  }
+
+  const handleNext = () => {
+    if (currentIndex === initialSeed.length - 2) {
+      return;
+    }
+
+    setBills([...initialSeed.slice(currentIndex, currentIndex + 3)]);
+    setCurrentIndex(currentIndex + 1);
+  }
+
+  const handlePrevious = () => {
+    if (currentIndex === 1) {
+      return;
+    }
+
+    setBills([...initialSeed.slice(currentIndex - 2, currentIndex + 1)]);
+    setCurrentIndex(currentIndex - 1);
+  }
+
+
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-center mt-2">
+        <p className="text-3xl">My bils</p>
+      </div>
+      <div className="min-h-[800px]">
+        <div className="flex flex-row gap-2 justify-center relative">
+          {bills.map((month, index) => (
+            <div key={month.month} className={`border-2 p-4 ${getSkew(index)}`}>
+              <div className="flex justify-center">
+                <p className="text-lg">{month.month}</p>
+              </div>
+              <div className="flex flex-col gap-2">
+                {month.bills.map((bill) => (
+                  <div key={bill.id} className='grid grid-cols-3'>
+                    <p className="text-lg">{bill.name}</p>
+                    <p className="text-lg">{bill.amount}</p>
+                    <p className="text-lg">{bill.dueDate}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <div className="flex justify-center gap-4 mt-4">
+          <button className="hover:scale-125 cursor-pointer" onClick={handlePrevious}><FaArrowLeft /></button>
+          <button className="hover:scale-125 cursor-pointer" onClick={handleNext}><FaArrowRight /></button>
+        </div>
+      </div>
     </div>
   );
 }
