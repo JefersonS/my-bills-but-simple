@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import NewBillModal from "./components/NewBillModal";
 
-type MonthlyBills = {
+export type MonthlyBills = {
   id: string;
   name: string;
   amount: number;
@@ -160,12 +161,13 @@ const initialSeed = [
 export default function Home() {
   const [bills, setBills] = useState<Month[]>([...initialSeed.slice(0, 3)]);
   const [currentIndex, setCurrentIndex] = useState(1);
+  const [showModal, setShowModal] = useState(false);
 
   const getSkew = (index: number) => {
     if (index === 0) {
-      return "skew-y-[-12deg] absolute left-[480px] top-8";
+      return "clipLeft";
     } else if (index === 2) {
-      return "skew-y-12 absolute right-[480px] top-8";
+      return "clipRight";
     }
   }
 
@@ -187,9 +189,23 @@ export default function Home() {
     setCurrentIndex(currentIndex - 1);
   }
 
+  const openModal = () => {
+    setShowModal(true);
+  }
+
+  const onCloseModal = () => {
+    setShowModal(false);
+  }
+
+  const addBill = (bill: MonthlyBills) => {
+    const month = initialSeed[currentIndex];
+    month.bills.push(bill);
+    setBills([...initialSeed.slice(currentIndex - 1, currentIndex + 2)]);
+  }
 
   return (
     <div className="space-y-4">
+      <NewBillModal isOpen={showModal} onClose={onCloseModal} addBill={addBill} />
       <div className="flex justify-center mt-2">
         <p className="text-3xl">My bils</p>
       </div>
@@ -216,7 +232,18 @@ export default function Home() {
           <button className="hover:scale-125 cursor-pointer" onClick={handlePrevious}><FaArrowLeft /></button>
           <button className="hover:scale-125 cursor-pointer" onClick={handleNext}><FaArrowRight /></button>
         </div>
+        <div className="flex justify-center">
+          <button className="hover:scale-125 cursor-pointer" onClick={openModal}>New Bill</button>
+        </div>
       </div>
+      <style jsx>{`
+        .clipRight {
+          clip-path: polygon(0% 0%, 100% 10%, 100% 90%, 0% 100%);
+        }
+        .clipLeft {
+          clip-path: polygon(0% 10%, 100% 0%, 100% 100%, 0% 90%);
+        }
+      `}</style>
     </div>
   );
 }
